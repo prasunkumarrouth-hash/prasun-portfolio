@@ -5,13 +5,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prasun Kumar Routh | Portfolio</title>
     
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M524DFV5"></script>
+    <!-- Google Consent Mode (Must be before gtag.js) -->
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
+      
+      // Default consent to denied to comply with GDPR/CCPA
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'analytics_storage': 'denied'
+      });
+    </script>
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-R3M524DFV5"></script>
+    <script>
+      gtag('js', new Date());
       gtag('config', 'G-R3M524DFV5');
     </script>
 
@@ -19,6 +28,39 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <!-- Inline CSS for the Cookie Banner to ensure it displays correctly -->
+    <style>
+        #cookie-banner {
+            display: none; 
+            position: fixed; 
+            bottom: 20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 9999; 
+            padding: 20px 30px; 
+            text-align: center; 
+            max-width: 90%; 
+            width: 450px; 
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            font-family: 'Inter', sans-serif;
+        }
+        .cookie-buttons {
+            display: flex; 
+            gap: 15px; 
+            justify-content: center; 
+            margin-top: 20px;
+        }
+        .btn-accept {
+            padding: 10px 24px; cursor: pointer; background: #fff; color: #000; border: none; border-radius: 6px; font-weight: 500;
+        }
+        .btn-decline {
+            padding: 10px 24px; cursor: pointer; background: transparent; color: #fff; border: 1px solid #fff; border-radius: 6px; font-weight: 500;
+        }
+        .btn-accept:hover { background: #e0e0e0; }
+        .btn-decline:hover { background: rgba(255,255,255,0.1); }
+    </style>
 </head>
 <body>
 
@@ -103,6 +145,53 @@
         </section>
     </main>
 
+    <!-- Cookie Consent Banner -->
+    <div id="cookie-banner" class="glass-card">
+        <h4 style="margin: 0 0 10px 0; font-size: 18px; color: #fff;">Data & Privacy</h4>
+        <p style="margin: 0; font-size: 14px; color: #ddd; line-height: 1.5;">This site uses analytics cookies to measure portfolio traffic and understand user engagement. You can opt-in below to help improve the experience.</p>
+        <div class="cookie-buttons">
+            <button id="accept-cookies" class="btn-accept">Accept Analytics</button>
+            <button id="decline-cookies" class="btn-decline">Decline All</button>
+        </div>
+    </div>
+
     <script src="script.js"></script>
+
+    <!-- Cookie Consent Logic -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const cookieBanner = document.getElementById('cookie-banner');
+            const acceptBtn = document.getElementById('accept-cookies');
+            const declineBtn = document.getElementById('decline-cookies');
+
+            // Check localStorage to see if the user already made a choice
+            const consentStatus = localStorage.getItem('portfolioCookieConsent');
+
+            if (!consentStatus) {
+                // If no choice made yet, show the banner
+                cookieBanner.style.display = 'block';
+            } else if (consentStatus === 'granted') {
+                // If previously granted, update Google Analytics to start tracking
+                gtag('consent', 'update', {
+                    'analytics_storage': 'granted'
+                });
+            }
+
+            // Handle Accept Button
+            acceptBtn.addEventListener('click', function() {
+                localStorage.setItem('portfolioCookieConsent', 'granted');
+                gtag('consent', 'update', {
+                    'analytics_storage': 'granted'
+                });
+                cookieBanner.style.display = 'none';
+            });
+
+            // Handle Decline Button
+            declineBtn.addEventListener('click', function() {
+                localStorage.setItem('portfolioCookieConsent', 'denied');
+                cookieBanner.style.display = 'none';
+            });
+        });
+    </script>
 </body>
 </html>
